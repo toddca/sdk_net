@@ -1,5 +1,5 @@
-sdk_net
-=======
+Riskified SDK.Net
+=================
 
 An implementation of the Riskified API in C# for .NET Core (Standard 2.0)
 
