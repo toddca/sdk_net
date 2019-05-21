@@ -1,28 +1,31 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="Custom.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using Newtonsoft.Json;
 using Riskified.SDK.Utils;
-using System;
-using System.Collections.Generic;
 
 namespace Riskified.SDK.Model.OrderElements
 {
     public class Custom : IJsonSerializable
     {
         /// <summary>
-        /// Custom information attached to the order 
+        ///     Custom information attached to the order
         /// </summary>
-        /// <param name="app_dom_id">Originating System</param>
-        public Custom(string app_dom_id = null)
+        /// <param name="appDomId">Originating System</param>
+        public Custom(string appDomId = null)
         {
-            this.AppDomId = app_dom_id;
-        }
-
-        public void Validate(Utils.Validations validationType = Validations.Weak)
-        {
-            return;
+            AppDomId = appDomId;
         }
 
         [JsonProperty(PropertyName = "app_dom_id")]
         public string AppDomId { get; set; }
+
+        public void Validate(Validations validationType = Validations.Weak)
+        {
+        }
     }
 }

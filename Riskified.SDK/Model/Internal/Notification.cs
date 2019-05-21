@@ -1,3 +1,10 @@
+// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="Notification.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
 using Newtonsoft.Json;
 using Riskified.SDK.Model.OrderElements;
 
@@ -25,6 +32,5 @@ namespace Riskified.SDK.Model.Internal
 
         [JsonProperty(PropertyName = "decision_code", Required = Required.Default)]
         public string DecisionCode { get; set; }
-
     }
 }

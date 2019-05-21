@@ -1,10 +1,17 @@
-﻿using Riskified.SDK.Logging;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="Program.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using Riskified.SDK.Logging;
 
 namespace Riskified.SDK.Sample
 {
-    static class Program
+    internal static class Program
     {
-        static int Main(string[] args)
+        private static int Main(string[] args)
         {
             #region logger setup [Optional]
 
@@ -16,8 +23,12 @@ namespace Riskified.SDK.Sample
             #endregion
 
             # region run all api endpoints
+
             if (args.Length > 0 && args[0] == "run_all")
-                return OrderTransmissionExample.runAll();
+            {
+                return OrderTransmissionExample.RunAll();
+            }
+
             #endregion
 
             # region notification example
@@ -37,7 +48,6 @@ namespace Riskified.SDK.Sample
             NotificationServerExample.StopNotificationServer();
 
             return 0;
-            
         }
     }
 }

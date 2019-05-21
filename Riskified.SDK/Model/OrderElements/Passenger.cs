@@ -1,10 +1,13 @@
-﻿using Newtonsoft.Json;
-using Riskified.SDK.Utils;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="Passenger.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Riskified.SDK.Utils;
 
 namespace Riskified.SDK.Model.OrderElements
 {
@@ -12,36 +15,35 @@ namespace Riskified.SDK.Model.OrderElements
     public class Passenger : IJsonSerializable
     {
         /// <summary>
-        /// The shipping line (shiiping method)
+        ///     The Passenger
         /// </summary>
-        /// <param name="price">The price of this shipping method</param>
-        /// <param name="title">A human readable name for the shipping method</param>
-        /// <param name="code">A code to the shipping method</param>
-        public Passenger(string firstname, string lastname, DateTime dateOfBirth, string nationalityCode,
-                         float? insurancePrice, string documentNumber, string documentType, DateTime? documentIssueDate,
-                         DateTime? documentExpirationDate, string passengerType = null, string insuranceType = null)
+        /// <param name="firstname"></param>
+        /// <param name="lastname"></param>
+        /// <param name="dateOfBirth"></param>
+        /// <param name="nationalityCode"></param>
+        /// <param name="insurancePrice"></param>
+        /// <param name="documentNumber"></param>
+        /// <param name="documentType"></param>
+        /// <param name="documentIssueDate"></param>
+        /// <param name="documentExpirationDate"></param>
+        /// <param name="passengerType"></param>
+        /// <param name="insuranceType"></param>
+        public Passenger(
+            string firstname, string lastname, DateTime dateOfBirth, string nationalityCode,
+            float? insurancePrice, string documentNumber, string documentType, DateTime? documentIssueDate,
+            DateTime? documentExpirationDate, string passengerType = null, string insuranceType = null)
         {
-            this.Firstname = firstname;
-            this.Lastname = lastname;
-            this.DateOfBirth = dateOfBirth;
-            this.nationalityCode = nationalityCode;
-            this.insuranceType = insuranceType;
-            this.insurancePrice = insurancePrice;
-            this.DocumentNumber = documentNumber;
-            this.DocumetType = documentType;
-            this.DocumentIssueDate = documentIssueDate;
-            this.DocumentExpirationDate = documentExpirationDate;
-            this.PassengerType = passengerType;
-        }
-
-        /// <summary>
-        /// Validates the objects fields content
-        /// </summary>
-        /// <param name="validationType">Should use weak validations or strong</param>
-        /// <exception cref="OrderFieldBadFormatException">throws an exception if one of the parameters doesn't match the expected format</exception>
-        public void Validate(Validations validationType = Validations.Weak)
-        {
-            //TODO: add validations
+            Firstname = firstname;
+            Lastname = lastname;
+            DateOfBirth = dateOfBirth;
+            NationalityCode = nationalityCode;
+            InsuranceType = insuranceType;
+            InsurancePrice = insurancePrice;
+            DocumentNumber = documentNumber;
+            DocumentType = documentType;
+            DocumentIssueDate = documentIssueDate;
+            DocumentExpirationDate = documentExpirationDate;
+            PassengerType = passengerType;
         }
 
         [JsonProperty(PropertyName = "first_name")]
@@ -54,19 +56,19 @@ namespace Riskified.SDK.Model.OrderElements
         public DateTime? DateOfBirth { get; set; }
 
         [JsonProperty(PropertyName = "nationality_code")]
-        public string nationalityCode { get; set; }
+        public string NationalityCode { get; set; }
 
         [JsonProperty(PropertyName = "insurance_type")]
-        public string insuranceType { get; set; }
+        public string InsuranceType { get; set; }
 
         [JsonProperty(PropertyName = "insurance_price")]
-        public float? insurancePrice { get; set; }
+        public float? InsurancePrice { get; set; }
 
         [JsonProperty(PropertyName = "document_number")]
         public string DocumentNumber { get; set; }
 
         [JsonProperty(PropertyName = "document_type")]
-        public string DocumetType { get; set; }
+        public string DocumentType { get; set; }
 
         [JsonProperty(PropertyName = "document_issue_date")]
         public DateTime? DocumentIssueDate { get; set; }
@@ -77,8 +79,13 @@ namespace Riskified.SDK.Model.OrderElements
         [JsonProperty(PropertyName = "passenger_type")]
         public string PassengerType { get; set; }
 
-
+        /// <summary>
+        ///     Validates the objects fields content
+        /// </summary>
+        /// <param name="validationType">Should use weak validations or strong</param>
+        public void Validate(Validations validationType = Validations.Weak)
+        {
+            //TODO: add validations
+        }
     }
-
 }
-

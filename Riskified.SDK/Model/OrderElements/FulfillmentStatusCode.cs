@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="FulfillmentStatusCode.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Riskified.SDK.Model.OrderElements
 {
@@ -12,10 +13,13 @@ namespace Riskified.SDK.Model.OrderElements
     {
         [EnumMember(Value = "success")]
         Success,
+
         [EnumMember(Value = "cancelled")]
         Cancelled,
+
         [EnumMember(Value = "error")]
         Error,
+
         [EnumMember(Value = "failure")]
         Failure
     }

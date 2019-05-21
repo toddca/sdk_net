@@ -1,23 +1,23 @@
-﻿using Newtonsoft.Json;
-using Riskified.SDK.Model.OrderElements;
-using Riskified.SDK.Utils;
-using System;
-using System.Collections.Generic;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="OrderCheckout.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Riskified.SDK.Utils;
 
 namespace Riskified.SDK.Model
 {
     public class OrderCheckout : OrderBase
     {
         /// <summary>
-        /// Creates a new order checkout
+        ///     Creates a new order checkout
         /// </summary>
         /// <param name="merchantOrderId">The unique id of the order at the merchant systems</param>
         public OrderCheckout(string merchantOrderId) : base(merchantOrderId)
         {
-
         }
 
         public override void Validate(Validations validationType = Validations.Weak)
@@ -25,27 +25,21 @@ namespace Riskified.SDK.Model
             base.Validate(validationType);
 
             // All properties are optional, so we only validated when they're filled.
-            
-            if(LineItems != null)
-            {
-                LineItems.ToList().ForEach(item => item.Validate(validationType));
-            }
 
-            
-            if(ShippingAddress != null)
+            LineItems?.ToList().ForEach(item => item.Validate(validationType));
+
+
+            if (ShippingAddress != null)
             {
                 ShippingLines.ToList().ForEach(item => item.Validate(validationType));
             }
-            
+
             if (PaymentDetails != null && PaymentDetails.Length > 0)
             {
                 PaymentDetails.ToList().ForEach(item => item.Validate(validationType));
             }
 
-            if(NoChargeAmount != null)
-            {
-                NoChargeAmount.Validate(validationType);
-            }
+            NoChargeAmount?.Validate(validationType);
 
             if (validationType == Validations.Weak)
             {
@@ -53,28 +47,19 @@ namespace Riskified.SDK.Model
                 {
                     BillingAddress.Validate(validationType);
                 }
-                else if(ShippingAddress != null)
+                else
                 {
-                    ShippingAddress.Validate(validationType);
+                    ShippingAddress?.Validate(validationType);
                 }
             }
             else
             {
-                if(BillingAddress != null)
-                {
-                    BillingAddress.Validate(validationType);
-                }
-                if(ShippingAddress != null)
-                {
-                    ShippingAddress.Validate(validationType);
-                }
+                BillingAddress?.Validate(validationType);
+                ShippingAddress?.Validate(validationType);
             }
 
-            if(Customer != null)
-            {
-                Customer.Validate(validationType);
-            }
-            if(!string.IsNullOrEmpty(Email))
+            Customer?.Validate(validationType);
+            if (!string.IsNullOrEmpty(Email))
             {
                 InputValidators.ValidateEmail(Email);
             }
@@ -90,8 +75,8 @@ namespace Riskified.SDK.Model
             {
                 InputValidators.ValidateZeroOrPositiveValue(TotalPrice.Value, "Total Price");
             }
-           
-            if(CreatedAt != null)
+
+            if (CreatedAt != null)
             {
                 InputValidators.ValidateDateNotDefault(CreatedAt.Value, "Created At");
             }
@@ -117,12 +102,7 @@ namespace Riskified.SDK.Model
                 InputValidators.ValidateDateNotDefault(ClosedAt.Value, "Closed At");
             }
 
-            if (Decision != null)
-            {
-                Decision.Validate(validationType);
-            }
-
+            Decision?.Validate(validationType);
         }
-
     }
 }

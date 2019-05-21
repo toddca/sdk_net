@@ -1,4 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="CreditCardPaymentDetails.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using Newtonsoft.Json;
 using Riskified.SDK.Exceptions;
 using Riskified.SDK.Model.OrderCheckoutElements;
 using Riskified.SDK.Utils;
@@ -8,21 +15,32 @@ namespace Riskified.SDK.Model.OrderElements
     public class CreditCardPaymentDetails : IPaymentDetails
     {
         /// <summary>
-        /// The payment information for the order
+        ///     The payment information for the order
         /// </summary>
-        /// <param name="avsResultCode">The Response code from AVS the address veriﬁcation system. The code is a single letter</param>
-        /// <param name="cvvResultCode">The Response code from the credit card company indicating whether the customer entered the card security code, a.k.a. card veriﬁcation value, correctly. The code is a single letter or empty string</param>
-        /// <param name="creditCardBin">The issuer identiﬁcation number (IIN), formerly known as bank identiﬁcation number (BIN) ] of the customer's credit card. This is made up of the ﬁrst few digits of the credit card number</param>
+        /// <param name="avsResultCode">The Response code from AVS the address verification system. The code is a single letter</param>
+        /// <param name="cvvResultCode">
+        ///     The Response code from the credit card company indicating whether the customer entered the
+        ///     card security code, a.k.a. card verification value, correctly. The code is a single letter or empty string
+        /// </param>
+        /// <param name="creditCardBin">
+        ///     The issuer identification number (IIN), formerly known as bank identification number (BIN) ]
+        ///     of the customer's credit card. This is made up of the first few digits of the credit card number
+        /// </param>
         /// <param name="creditCardCompany">The name of the company who issued the customer's credit card</param>
-        /// <param name="creditCardNumber">The 4 last digits of the customer's credit card number, with most of the leading digits redacted with Xs</param>
+        /// <param name="creditCardNumber">
+        ///     The 4 last digits of the customer's credit card number, with most of the leading digits
+        ///     redacted with Xs
+        /// </param>
         /// <param name="authorizationId">Unique identifier of the payment transaction as granted by the processing gateway.</param>
-        public CreditCardPaymentDetails(string avsResultCode, 
-                                        string cvvResultCode, 
-                                        string creditCardBin, 
-                                        string creditCardCompany, 
-                                        string creditCardNumber, 
-                                        string authorizationId = null,
-                                        string creditCardToken = null)
+        /// <param name="creditCardToken"></param>
+        public CreditCardPaymentDetails(
+            string avsResultCode,
+            string cvvResultCode,
+            string creditCardBin,
+            string creditCardCompany,
+            string creditCardNumber,
+            string authorizationId = null,
+            string creditCardToken = null)
         {
             AvsResultCode = avsResultCode;
             CvvResultCode = cvvResultCode;
@@ -31,24 +49,6 @@ namespace Riskified.SDK.Model.OrderElements
             CreditCardNumber = creditCardNumber;
             AuthorizationId = authorizationId;
             CreditCardToken = creditCardToken;
-        }
-
-        /// <summary>
-        /// Validates the objects fields content
-        /// </summary>
-        /// <param name="isWeak">Should use weak validations or strong</param>
-        /// <exception cref="OrderFieldBadFormatException">throws an exception if one of the parameters doesn't match the expected format</exception>
-        public void Validate(Validations validationType = Validations.Weak)
-        {
-            if (validationType != Validations.Weak)
-            {
-                InputValidators.ValidateAvsResultCode(AvsResultCode);
-                InputValidators.ValidateCvvResultCode(CvvResultCode);
-                InputValidators.ValidateCreditCard(CreditCardNumber);
-            }
-            
-            InputValidators.ValidateValuedString(CreditCardBin, "Credit Card Bin");
-            InputValidators.ValidateValuedString(CreditCardCompany, "Credit Card Company");
         }
 
         [JsonProperty(PropertyName = "avs_result_code")]
@@ -71,12 +71,32 @@ namespace Riskified.SDK.Model.OrderElements
 
         [JsonProperty(PropertyName = "authorization_error")]
         public AuthorizationError AuthorizationError { get; set; }
-        
+
         [JsonProperty(PropertyName = "cardholder_name")]
         public string CardholderName { get; set; }
 
         [JsonProperty(PropertyName = "authorization_id")]
         public string AuthorizationId { get; set; }
-    }
 
+        /// <summary>
+        ///     Validates the objects fields content
+        /// </summary>
+        /// <param name="validationType"></param>
+        /// <exception cref="OrderFieldBadFormatException">
+        ///     throws an exception if one of the parameters doesn't match the expected
+        ///     format
+        /// </exception>
+        public void Validate(Validations validationType = Validations.Weak)
+        {
+            if (validationType != Validations.Weak)
+            {
+                InputValidators.ValidateAvsResultCode(AvsResultCode);
+                InputValidators.ValidateCvvResultCode(CvvResultCode);
+                InputValidators.ValidateCreditCard(CreditCardNumber);
+            }
+
+            InputValidators.ValidateValuedString(CreditCardBin, "Credit Card Bin");
+            InputValidators.ValidateValuedString(CreditCardCompany, "Credit Card Company");
+        }
+    }
 }

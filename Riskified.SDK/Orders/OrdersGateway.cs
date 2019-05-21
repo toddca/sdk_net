@@ -1,49 +1,57 @@
-﻿using System;
-using System.Linq;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="OrdersGateway.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
 using Riskified.SDK.Exceptions;
 using Riskified.SDK.Model;
-using Riskified.SDK.Utils;
 using Riskified.SDK.Model.AccountActionElements;
-using System.Collections.Generic;
 using Riskified.SDK.Model.Internal;
+using Riskified.SDK.Utils;
 
 namespace Riskified.SDK.Orders
 {
     /// <summary>
-    /// Main class to handle order creation and submittion to Riskified Servers
+    ///     Main class to handle order creation and submission to Riskified Servers
     /// </summary>
     public class OrdersGateway
     {
-        private readonly RiskifiedEnvironment _env;
         private readonly string _authToken;
+        private readonly RiskifiedEnvironment _env;
         private readonly string _shopDomain;
         private readonly Validations _validationMode;
 
         /// <summary>
-        /// Creates the mediator class used to send order data to Riskified
+        ///     Creates the mediator class used to send order data to Riskified
         /// </summary>
         /// <param name="env">The Riskified environment to send to</param>
         /// <param name="authToken">The merchant's auth token</param>
         /// <param name="shopDomain">The merchant's shop domain</param>
-        public OrdersGateway(RiskifiedEnvironment env, string authToken, string shopDomain) : this(env,authToken,shopDomain,Validations.All)
-        {            
+        public OrdersGateway(RiskifiedEnvironment env, string authToken, string shopDomain) : this(env, authToken, shopDomain, Validations.All)
+        {
         }
 
         /// <summary>
-        /// Old version - Deprecated
-        /// Creates the mediator class used to send order data to Riskified        
+        ///     Old version - Deprecated
+        ///     Creates the mediator class used to send order data to Riskified
         /// </summary>
         /// <param name="env">The Riskified environment to send to</param>
         /// <param name="authToken">The merchant's auth token</param>
         /// <param name="shopDomain">The merchant's shop domain</param>
         /// <param name="shouldUseWeakValidation">Should weakly validate before sending</param>
         public OrdersGateway(RiskifiedEnvironment env, string authToken, string shopDomain, bool shouldUseWeakValidation)
-            : this(env, authToken, shopDomain, shouldUseWeakValidation ? Validations.Weak : Validations.All)
+            : this(env, authToken, shopDomain, shouldUseWeakValidation
+                                                   ? Validations.Weak
+                                                   : Validations.All)
         {
         }
 
         /// <summary>
-        /// Creates the mediator class used to send order data to Riskified
+        ///     Creates the mediator class used to send order data to Riskified
         /// </summary>
         /// <param name="env">The Riskified environment to send to</param>
         /// <param name="authToken">The merchant's auth token</param>
@@ -58,78 +66,105 @@ namespace Riskified.SDK.Orders
         }
 
         /// <summary>
-        /// Validates the Order checkout object fields (All fields except merchendOrderId are optional)
-        /// Sends a new order checkout to Riskified Servers (without Submit for analysis)
+        ///     Validates the Order checkout object fields (All fields except merchant OrderId are optional)
+        ///     Sends a new order checkout to Riskified Servers (without Submit for analysis)
         /// </summary>
-        /// <param name="order">The Order checkout to create</param>
-        /// <returns>The order checkout notification result containing status,description and sent order id in case of successful transfer</returns>
+        /// <param name="orderCheckout">The Order checkout to create</param>
+        /// <returns>
+        ///     The order checkout notification result containing status,description and sent order id in case of successful
+        ///     transfer
+        /// </returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         public OrderNotification Checkout(OrderCheckout orderCheckout)
         {
             return SendOrderCheckout(orderCheckout, HttpUtils.BuildUrl(_env, "/api/checkout_create"));
         }
 
         /// <summary>
-        /// Validates the Order checkout object fields (All fields except merchendOrderId are optional)
-        /// Sends a new order checkout to Riskified Servers (without Submit for analysis)
+        ///     Validates the Order checkout object fields (All fields except merchendOrderId are optional)
+        ///     Sends a new order checkout to Riskified Servers (without Submit for analysis)
         /// </summary>
-        /// <param name="order">The Order checkout to create</param>
-        /// <returns>The order checkout notification result containing status,description and sent order id in case of successful transfer</returns>
+        /// <param name="orderCheckout">The Order checkout to create</param>
+        /// <returns>
+        ///     The order checkout notification result containing status,description and sent order id in case of successful
+        ///     transfer
+        /// </returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         public OrderNotification CheckoutDenied(OrderCheckoutDenied orderCheckout)
         {
             return SendOrderCheckout(orderCheckout, HttpUtils.BuildUrl(_env, "/api/checkout_denied"));
         }
 
         /// <summary>
-        /// Validates the Order object fields
-        /// Sends a new order to Riskified Servers (without Submit for analysis)
+        ///     Validates the Order object fields
+        ///     Sends a new order to Riskified Servers (without Submit for analysis)
         /// </summary>
         /// <param name="order">The Order to create</param>
         /// <returns>The order notification result containing status,description and sent order id in case of successful transfer</returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         public OrderNotification Create(Order order)
-        {            
+        {
             return SendOrder(order, HttpUtils.BuildUrl(_env, "/api/create"));
         }
 
         /// <summary>
-        /// Validates the Order object fields
-        /// Sends an updated order (already created) to Riskified Servers
+        ///     Validates the Order object fields
+        ///     Sends an updated order (already created) to Riskified Servers
         /// </summary>
         /// <param name="order">The Order to update</param>
         /// <returns>The order notification result containing status,description and sent order id in case of successful transfer</returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         public OrderNotification Update(Order order)
         {
             return SendOrder(order, HttpUtils.BuildUrl(_env, "/api/update"));
         }
 
         /// <summary>
-        /// Validates the Order object fields
-        /// Sends an order to Riskified Servers and submits it for analysis
+        ///     Validates the Order object fields
+        ///     Sends an order to Riskified Servers and submits it for analysis
         /// </summary>
         /// <param name="order">The Order to submit</param>
         /// <returns>The order notification result containing status,description and sent order id in case of successful transfer</returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         public OrderNotification Submit(Order order)
         {
             return SendOrder(order, HttpUtils.BuildUrl(_env, "/api/submit"));
         }
 
         /// <summary>
-        /// Validates the Order object fields
-        /// Send an Order to Riskified, will be synchronously reviewed based on current plan
+        ///     Validates the Order object fields
+        ///     Send an Order to Riskified, will be synchronously reviewed based on current plan
         /// </summary>
         /// <param name="order">The Order to make a synchronous decision (sync plan only)</param>
-        /// <returns>The order notification result containing status, decision, description and sent order id in case of successful transfer</returns>
+        /// <returns>
+        ///     The order notification result containing status, decision, description and sent order id in case of successful
+        ///     transfer
+        /// </returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         public OrderNotification Decide(Order order)
         {
             return SendOrder(order, HttpUtils.BuildUrl(_env, "/api/decide", FlowStrategy.Sync));
@@ -176,79 +211,105 @@ namespace Riskified.SDK.Orders
         }
 
         /// <summary>
-        /// Check Eligibility for Deco payment
-        /// After checkout, inquiry if order is eligible for Deco
+        ///     Check Eligibility for Deco payment
+        ///     After checkout, inquiry if order is eligible for Deco
         /// </summary>
         /// <param name="orderIdOnly">Order (with ID of checkout) to check the orders eligibility for Deco payment</param>
-        /// <returns>The order notification result containing status, decision, description and sent order id in case of successful transfer</returns>
+        /// <returns>
+        ///     The order notification result containing status, decision, description and sent order id in case of successful
+        ///     transfer
+        /// </returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         public OrderNotification Eligible(OrderIdOnly orderIdOnly)
         {
             return SendOrder(orderIdOnly, HttpUtils.BuildUrl(_env, "/api/eligible", FlowStrategy.Deco));
         }
 
         /// <summary>
-        /// Opt-in to Deco payment
-        /// After checkout and eligibility check, opt-in to Deco payment
+        ///     Opt-in to Deco payment
+        ///     After checkout and eligibility check, opt-in to Deco payment
         /// </summary>
         /// <param name="orderIdOnly">Order (with ID of checkout) to opt eligible order in to Deco payment</param>
-        /// <returns>The order notification result containing status, decision, description and sent order id in case of successful transfer</returns>
+        /// <returns>
+        ///     The order notification result containing status, decision, description and sent order id in case of successful
+        ///     transfer
+        /// </returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         public OrderNotification OptIn(OrderIdOnly orderIdOnly)
         {
             return SendOrder(orderIdOnly, HttpUtils.BuildUrl(_env, "/api/opt_in", FlowStrategy.Deco));
         }
 
         /// <summary>
-        /// Validates the cancellation data
-        /// Sends a cancellation message for a specific order (id should already exist) to Riskified server for status and charge fees update
+        ///     Validates the cancellation data
+        ///     Sends a cancellation message for a specific order (id should already exist) to Riskified server for status and
+        ///     charge fees update
         /// </summary>
         /// <param name="orderCancellation"></param>
         /// <returns>The order notification result containing status,description and sent order id in case of successful transfer</returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         public OrderNotification Cancel(OrderCancellation orderCancellation)
         {
             return SendOrder(orderCancellation, HttpUtils.BuildUrl(_env, "/api/cancel"));
         }
 
         /// <summary>
-        /// Validates the partial refunds data for an order
-        /// Sends the partial refund data for an order to Riskified server for status and charge fees update
+        ///     Validates the partial refunds data for an order
+        ///     Sends the partial refund data for an order to Riskified server for status and charge fees update
         /// </summary>
         /// <param name="orderPartialRefund"></param>
         /// <returns>The order notification result containing status,description and sent order id in case of successful transfer</returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         public OrderNotification PartlyRefund(OrderPartialRefund orderPartialRefund)
         {
             return SendOrder(orderPartialRefund, HttpUtils.BuildUrl(_env, "/api/refund"));
         }
 
         /// <summary>
-        /// Validates the cancellation data
-        /// Sends a cancellation message for a specific order (id should already exist) to Riskified server for status and charge fees update
+        ///     Validates the cancellation data
+        ///     Sends a cancellation message for a specific order (id should already exist) to Riskified server for status and
+        ///     charge fees update
         /// </summary>
-        /// <param name="orderCancellation"></param>
+        /// <param name="orderFulfillment"></param>
         /// <returns>The order notification result containing status,description and sent order id in case of successful transfer</returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         public OrderNotification Fulfill(OrderFulfillment orderFulfillment)
         {
             return SendOrder(orderFulfillment, HttpUtils.BuildUrl(_env, "/api/fulfill"));
         }
 
         /// <summary>
-        /// Validates the decision data
-        /// Sends a decision message for a specific order (id should already exist) to Riskified server.
-        /// Update existing order external status. Lets Riskified know what was your decision on your order.
+        ///     Validates the decision data
+        ///     Sends a decision message for a specific order (id should already exist) to Riskified server.
+        ///     Update existing order external status. Lets Riskified know what was your decision on your order.
         /// </summary>
-        /// <param name="OrderDecision">The decision details</param>
+        /// <param name="orderDecision">The decision details</param>
         /// <returns>The order notification result containing status,description and sent order id in case of successful transfer</returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         public OrderNotification Decision(OrderDecision orderDecision)
         {
             return SendOrder(orderDecision, HttpUtils.BuildUrl(_env, "/api/decision"));
@@ -260,66 +321,75 @@ namespace Riskified.SDK.Orders
         }
 
         /// <summary>
-        /// Validates the list of historical orders and sends them in batches to Riskified Servers.
-        /// The FinancialStatus field of each order should contain the latest order status as described at "http://apiref.riskified.com/net/#actions-historical"
-        /// 
+        ///     Validates the list of historical orders and sends them in batches to Riskified Servers.
+        ///     The FinancialStatus field of each order should contain the latest order status as described at
+        ///     "http://apiref.riskified.com/net/#actions-historical"
         /// </summary>
-        /// <param name="order">The Orders to send</param>
-        /// <param name="failedOrders">When the method returns false, contains a mapping from order_id (key) to error message (value), otherwise will be null</param>
-        /// <returns>True if all orders were sent successfully, false if one or more failed due to bad format or tranfer error</returns>
+        /// <param name="orders">The Orders to send</param>
+        /// <param name="failedOrders">
+        ///     When the method returns false, contains a mapping from order_id (key) to error message
+        ///     (value), otherwise will be null
+        /// </param>
+        /// <returns>True if all orders were sent successfully, false if one or more failed due to bad format or transfer error</returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of an order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
-        public bool SendHistoricalOrders(IEnumerable<Order> orders,out Dictionary<string,string> failedOrders)
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
+        public bool SendHistoricalOrders(IEnumerable<Order> orders, out Dictionary<string, string> failedOrders)
         {
-            const byte batchSize = 10;
+            const byte BatchSize = 10;
 
-            if(orders == null)
+            if (orders == null)
             {
-                failedOrders=null;
+                failedOrders = null;
                 return true;
             }
 
-            Dictionary<string, string> errors = new Dictionary<string, string>();
+            var errors = new Dictionary<string, string>();
             var riskifiedEndpointUrl = HttpUtils.BuildUrl(_env, "/api/historical");
 
-            List<Order> batch = new List<Order>(batchSize);
-            var enumerator = orders.GetEnumerator();
-            do
+            var batch = new List<Order>(BatchSize);
+            using (var enumerator = orders.GetEnumerator())
             {
-                batch.Clear();
-                while (batch.Count < batchSize && enumerator.MoveNext())
+                do
                 {
-                    // validate orders and assign to next batch until full
-                    Order order = enumerator.Current;
-                    try
+                    batch.Clear();
+                    while (batch.Count < BatchSize && enumerator.MoveNext())
                     {
-                        if (_validationMode != Validations.Skip)
+                        // validate orders and assign to next batch until full
+                        var order = enumerator.Current;
+                        try
                         {
-                            order.Validate(_validationMode);
+                            if (_validationMode != Validations.Skip)
+                            {
+                                order.Validate(_validationMode);
+                            }
+                            batch.Add(order);
                         }
-                        batch.Add(order);
+                        catch (OrderFieldBadFormatException e)
+                        {
+                            errors.Add(order.Id, e.Message);
+                        }
                     }
-                    catch (OrderFieldBadFormatException e)
+                    if (batch.Count > 0)
                     {
-                        errors.Add(order.Id, e.Message);
+                        // send batch
+                        var wrappedOrders = new OrdersWrapper(batch);
+                        try
+                        {
+                            HttpUtils.JsonPostAndParseResponseToObject(riskifiedEndpointUrl, wrappedOrders, _authToken, _shopDomain);
+                        }
+                        catch (RiskifiedTransactionException e)
+                        {
+                            batch.ForEach(o => errors.Add(o.Id, e.Message));
+                        }
                     }
                 }
-                if (batch.Count > 0)
-                {
-                    // send batch
-                    OrdersWrapper wrappedOrders = new OrdersWrapper(batch);
-                    try
-                    {
-                        HttpUtils.JsonPostAndParseResponseToObject<OrdersWrapper>(riskifiedEndpointUrl, wrappedOrders, _authToken, _shopDomain);
-                    }
-                    catch (RiskifiedTransactionException e)
-                    {
-                        batch.ForEach(o => errors.Add(o.Id, e.Message));
-                    }
-                }
-            } while (batch.Count == batchSize);
+                while (batch.Count == BatchSize);
+            }
 
-            if(errors.Count == 0)
+            if (errors.Count == 0)
             {
                 failedOrders = null;
                 return true;
@@ -329,53 +399,69 @@ namespace Riskified.SDK.Orders
         }
 
         /// <summary>
-        /// Validates the Order object fields
-        /// Sends the order to riskified server endpoint as configured in the ctor
+        ///     Validates the Order object fields
+        ///     Sends the order to riskified server endpoint as configured in the ctor
         /// </summary>
         /// <param name="order">The order object to send</param>
         /// <param name="riskifiedEndpointUrl">the endpoint to which the order should be sent</param>
-        /// <returns>The order tranaction result containing status and order id  in riskified servers (for followup only - not used latter) in case of successful transfer</returns>
+        /// <returns>
+        ///     The order transaction result containing status and order id  in riskified servers (for followup only - not
+        ///     used latter) in case of successful transfer
+        /// </returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         private OrderNotification SendOrder(AbstractOrder order, Uri riskifiedEndpointUrl)
         {
-            if(_validationMode != Validations.Skip)
+            if (_validationMode != Validations.Skip)
             {
                 order.Validate(_validationMode);
             }
             var wrappedOrder = new OrderWrapper<AbstractOrder>(order);
-            var transactionResult = HttpUtils.JsonPostAndParseResponseToObject<OrderWrapper<Notification>, OrderWrapper<AbstractOrder>>(riskifiedEndpointUrl, wrappedOrder, _authToken, _shopDomain);
+            var transactionResult =
+                HttpUtils.JsonPostAndParseResponseToObject<OrderWrapper<Notification>, OrderWrapper<AbstractOrder>>(riskifiedEndpointUrl, wrappedOrder, _authToken,
+                                                                                                                    _shopDomain);
             return new OrderNotification(transactionResult);
-            
         }
 
         private AccountActionNotification SendAccountAction(AbstractAccountAction accountAction, Uri riskifiedEndpointUrl)
         {
-            var transactionResult = HttpUtils.JsonPostAndParseResponseToObject<AccountActionNotification, AbstractAccountAction>(riskifiedEndpointUrl, accountAction, _authToken, _shopDomain);
+            var transactionResult =
+                HttpUtils.JsonPostAndParseResponseToObject<AccountActionNotification, AbstractAccountAction>(riskifiedEndpointUrl, accountAction, _authToken,
+                                                                                                             _shopDomain);
             return transactionResult;
         }
 
         /// <summary>
-        /// Validates the Order object fields
-        /// Sends the order to riskified server endpoint as configured in the ctor
+        ///     Validates the Order object fields
+        ///     Sends the order to riskified server endpoint as configured in the ctor
         /// </summary>
-        /// <param name="order">The order checkout object to send</param>
+        /// <param name="orderCheckout">The order checkout object to send</param>
         /// <param name="riskifiedEndpointUrl">the endpoint to which the order should be sent</param>
-        /// <returns>The order tranaction result containing status and order id  in riskified servers (for followup only - not used latter) in case of successful transfer</returns>
+        /// <returns>
+        ///     The order transaction result containing status and order id  in riskified servers (for followup only - not
+        ///     used latter) in case of successful transfer
+        /// </returns>
         /// <exception cref="OrderFieldBadFormatException">On bad format of the order (missing fields data or invalid data)</exception>
-        /// <exception cref="RiskifiedTransactionException">On errors with the transaction itself (network errors, bad response data)</exception>
+        /// <exception cref="RiskifiedTransactionException">
+        ///     On errors with the transaction itself (network errors, bad response
+        ///     data)
+        /// </exception>
         private OrderNotification SendOrderCheckout(AbstractOrder orderCheckout, Uri riskifiedEndpointUrl)
         {
             if (_validationMode != Validations.Skip)
             {
                 orderCheckout.Validate(_validationMode);
             }
+
             var wrappedOrder = new OrderCheckoutWrapper<AbstractOrder>(orderCheckout);
-            var transactionResult = HttpUtils.JsonPostAndParseResponseToObject<OrderCheckoutWrapper<Notification>, OrderCheckoutWrapper<AbstractOrder>>(riskifiedEndpointUrl, wrappedOrder, _authToken, _shopDomain);
+            var transactionResult =
+                HttpUtils.JsonPostAndParseResponseToObject<OrderCheckoutWrapper<Notification>, OrderCheckoutWrapper<AbstractOrder>>(riskifiedEndpointUrl,
+                                                                                                                                    wrappedOrder, _authToken,
+                                                                                                                                    _shopDomain);
             return new OrderNotification(transactionResult);
-            
         }
     }
-
-    
 }

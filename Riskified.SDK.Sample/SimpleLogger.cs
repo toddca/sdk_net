@@ -1,15 +1,17 @@
-﻿using System;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="SimpleLogger.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using System;
 using Riskified.SDK.Logging;
 
 namespace Riskified.SDK.Sample
 {
     public class SimpleExampleLogger : ILogger
     {
-
-        private static void Log(string message, string level)
-        {
-            Console.WriteLine("\nLOG:: {0}  {1}  {2}", DateTime.Now, level, message);
-        }
         public void Debug(string message)
         {
             Log(message, "DEBUG");
@@ -17,7 +19,7 @@ namespace Riskified.SDK.Sample
 
         public void Debug(string message, Exception exception)
         {
-            Debug(string.Format("{0}. Exception was: {1}. StackTrace: {2}", message, exception.Message, exception.StackTrace));
+            Debug($"{message}. Exception was: {exception.Message}. StackTrace: {exception.StackTrace}");
         }
 
         public void Info(string message)
@@ -27,7 +29,7 @@ namespace Riskified.SDK.Sample
 
         public void Info(string message, Exception exception)
         {
-            Info(string.Format("{0}. Exception was: {1}. StackTrace: {2}", message, exception.Message, exception.StackTrace));
+            Info($"{message}. Exception was: {exception.Message}. StackTrace: {exception.StackTrace}");
         }
 
         public void Error(string message)
@@ -37,7 +39,7 @@ namespace Riskified.SDK.Sample
 
         public void Error(string message, Exception exception)
         {
-            Error(string.Format("{0}. Exception was: {1}. StackTrace: {2}", message, exception.Message, exception.StackTrace));
+            Error($"{message}. Exception was: {exception.Message}. StackTrace: {exception.StackTrace}");
         }
 
         public void Fatal(string message)
@@ -47,7 +49,12 @@ namespace Riskified.SDK.Sample
 
         public void Fatal(string message, Exception exception)
         {
-            Fatal(string.Format("{0}. Exception was: {1} StackTrace: {2}", message, exception.Message, exception.StackTrace));
+            Fatal($"{message}. Exception was: {exception.Message} StackTrace: {exception.StackTrace}");
+        }
+
+        private static void Log(string message, string level)
+        {
+            Console.WriteLine("\nLOG:: {0}  {1}  {2}", DateTime.Now, level, message);
         }
     }
 }

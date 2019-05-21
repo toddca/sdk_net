@@ -1,10 +1,17 @@
-﻿using System;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="LoggingServices.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using System;
 
 namespace Riskified.SDK.Logging
 {
     public static class LoggingServices
     {
-        private static ILogger _loggerProxy;
+        private static ILogger s_loggerProxy;
         //private static LoggingServices _sdkLogger;
         /*
         public static LoggingServices GetInstance()
@@ -15,72 +22,50 @@ namespace Riskified.SDK.Logging
 
         public static void InitializeLogger(ILogger logger)
         {
-            if(logger != null)
-                _loggerProxy = logger;
+            if (logger != null)
+            {
+                s_loggerProxy = logger;
+            }
         }
 
         public static void Debug(string message)
         {
-            if (_loggerProxy != null)
-            {
-                _loggerProxy.Debug(message);
-            }
+            s_loggerProxy?.Debug(message);
         }
 
         public static void Debug(string message, Exception exception)
         {
-            if (_loggerProxy != null)
-            {
-                _loggerProxy.Debug(message,exception);
-            }
+            s_loggerProxy?.Debug(message, exception);
         }
 
         public static void Info(string message)
         {
-            if (_loggerProxy != null)
-            {
-                _loggerProxy.Info(message);
-            }
+            s_loggerProxy?.Info(message);
         }
 
         public static void Info(string message, Exception exception)
         {
-            if (_loggerProxy != null)
-            {
-                _loggerProxy.Info(message,exception);
-            }
+            s_loggerProxy?.Info(message, exception);
         }
 
         public static void Error(string message)
         {
-            if (_loggerProxy != null)
-            {
-                _loggerProxy.Error(message);
-            }
+            s_loggerProxy?.Error(message);
         }
 
         public static void Error(string message, Exception exception)
         {
-            if (_loggerProxy != null)
-            {
-                _loggerProxy.Error(message,exception);
-            }
+            s_loggerProxy?.Error(message, exception);
         }
 
         public static void Fatal(string message)
         {
-            if (_loggerProxy != null)
-            {
-                _loggerProxy.Fatal(message);
-            }
+            s_loggerProxy?.Fatal(message);
         }
 
         public static void Fatal(string message, Exception exception)
         {
-            if (_loggerProxy != null)
-            {
-                _loggerProxy.Fatal(message,exception);
-            }
+            s_loggerProxy?.Fatal(message, exception);
         }
     }
 }

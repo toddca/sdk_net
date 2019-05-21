@@ -1,4 +1,11 @@
-﻿using System;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="Customer.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using System;
 using System.Linq;
 using Newtonsoft.Json;
 using Riskified.SDK.Exceptions;
@@ -10,7 +17,7 @@ namespace Riskified.SDK.Model.OrderElements
     public class Customer : IJsonSerializable
     {
         /// <summary>
-        /// Creates a new Customer
+        ///     Creates a new Customer
         /// </summary>
         /// <param name="firstName">The customer first name</param>
         /// <param name="lastName">The customer last name</param>
@@ -20,7 +27,12 @@ namespace Riskified.SDK.Model.OrderElements
         /// <param name="verifiedEmail">Signs if the email was verified by the merchant is some way (optional)</param>
         /// <param name="createdAt">The time of creation of the customer card (optional)</param>
         /// <param name="notes">Additional notes regarding the customer (optional)</param>
-        public Customer(string firstName, string lastName, string id, int? ordersCount = null, string email = null, bool? verifiedEmail = null, DateTime? createdAt = null, string notes = null, SocialDetails[] social = null, BasicAddress address = null, string accountType = null)
+        /// <param name="social"></param>
+        /// <param name="address"></param>
+        /// <param name="accountType"></param>
+        public Customer(
+            string firstName, string lastName, string id, int? ordersCount = null, string email = null, bool? verifiedEmail = null, DateTime? createdAt = null,
+            string notes = null, SocialDetails[] social = null, BasicAddress address = null, string accountType = null)
         {
             FirstName = firstName;
             LastName = lastName;
@@ -35,49 +47,6 @@ namespace Riskified.SDK.Model.OrderElements
             Social = social;
             Address = address;
             AccountType = accountType;
-        }
-
-        /// <summary>
-        /// Validates the objects fields content
-        /// </summary>
-        /// <param name="validationType">Validation level to use on this Model</param>
-        /// <exception cref="OrderFieldBadFormatException">throws an exception if one of the parameters doesn't match the expected format</exception>
-        public void Validate(Validations validationType = Validations.Weak)
-        {
-            if (validationType == Validations.Weak)
-            {
-                if(string.IsNullOrEmpty(FirstName) && string.IsNullOrEmpty(LastName))
-                {
-                    throw new Exceptions.OrderFieldBadFormatException("Both First name and last name are missing or empty - at least one should be specified");
-                }
-            }
-            else
-            {
-                InputValidators.ValidateValuedString(FirstName, "First Name");
-                InputValidators.ValidateValuedString(LastName, "Last Name");
-            }
-
-            // optional fields validations
-            if (!string.IsNullOrEmpty(Email))
-            {
-                InputValidators.ValidateEmail(Email);
-            }
-            if (OrdersCount.HasValue)
-            {
-                InputValidators.ValidateZeroOrPositiveValue(OrdersCount.Value, "Orders Count");
-            }
-            if (CreatedAt.HasValue)
-            {
-                InputValidators.ValidateDateNotDefault(CreatedAt.Value, "Created At");
-            }
-            if(Social != null)
-            {
-                Social.ToList().ForEach(item => item.Validate(validationType));
-            }
-            if (Address != null)
-            {
-                Address.Validate(validationType);
-            }
         }
 
         [JsonProperty(PropertyName = "created_at")]
@@ -112,9 +81,48 @@ namespace Riskified.SDK.Model.OrderElements
 
         [JsonProperty(PropertyName = "address")]
         public BasicAddress Address { get; set; }
-        
+
         [JsonProperty(PropertyName = "account_type")]
         public string AccountType { get; set; }
 
+        /// <summary>
+        ///     Validates the objects fields content
+        /// </summary>
+        /// <param name="validationType">Validation level to use on this Model</param>
+        /// <exception cref="OrderFieldBadFormatException">
+        ///     throws an exception if one of the parameters doesn't match the expected
+        ///     format
+        /// </exception>
+        public void Validate(Validations validationType = Validations.Weak)
+        {
+            if (validationType == Validations.Weak)
+            {
+                if (string.IsNullOrEmpty(FirstName) && string.IsNullOrEmpty(LastName))
+                {
+                    throw new OrderFieldBadFormatException("Both First name and last name are missing or empty - at least one should be specified");
+                }
+            }
+            else
+            {
+                InputValidators.ValidateValuedString(FirstName, "First Name");
+                InputValidators.ValidateValuedString(LastName, "Last Name");
+            }
+
+            // optional fields validations
+            if (!string.IsNullOrEmpty(Email))
+            {
+                InputValidators.ValidateEmail(Email);
+            }
+            if (OrdersCount.HasValue)
+            {
+                InputValidators.ValidateZeroOrPositiveValue(OrdersCount.Value, "Orders Count");
+            }
+            if (CreatedAt.HasValue)
+            {
+                InputValidators.ValidateDateNotDefault(CreatedAt.Value, "Created At");
+            }
+            Social?.ToList().ForEach(item => item.Validate(validationType));
+            Address?.Validate(validationType);
+        }
     }
 }

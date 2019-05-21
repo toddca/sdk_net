@@ -9,7 +9,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Riskified")]
 [assembly: AssemblyProduct("Riskified.SDK.Sample")]
-[assembly: AssemblyCopyright("Copyright © Riskified 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

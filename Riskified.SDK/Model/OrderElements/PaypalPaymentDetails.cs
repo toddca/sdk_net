@@ -1,4 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="PaypalPaymentDetails.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using Newtonsoft.Json;
 using Riskified.SDK.Exceptions;
 using Riskified.SDK.Model.OrderCheckoutElements;
 using Riskified.SDK.Utils;
@@ -8,17 +15,18 @@ namespace Riskified.SDK.Model.OrderElements
     public class PaypalPaymentDetails : IPaymentDetails
     {
         /// <summary>
-        /// The payment information for the order in case of a paypal payment
+        ///     The payment information for the order in case of a paypal payment
         /// </summary>
-        /// <param name="paymentStatus">The payment status as recieved from paypal</param>
+        /// <param name="paymentStatus">The payment status as received from paypal</param>
         /// <param name="authorizationId">The authorization Id received from paypal</param>
-        /// <param name="payerEmail">The payer email assigned to his paypal accout as received from paypal</param>
+        /// <param name="payerEmail">The payer email assigned to his paypal account as received from paypal</param>
         /// <param name="payerStatus">The payer status as received from paypal</param>
         /// <param name="payerAddressStatus">The payer address status as received from paypal</param>
         /// <param name="protectionEligibility">The merchants protection eligibility for the order as received from paypal</param>
-        /// <param name="pendingReason">The pending reason received from paypal</param>
-        public PaypalPaymentDetails(string paymentStatus, string authorizationId = null, string payerEmail = null, string payerStatus = null, string payerAddressStatus = null , 
-            string protectionEligibility = null , string pendingReason = null)
+        /// <param name="pendingReason"></param>
+        public PaypalPaymentDetails(
+            string paymentStatus, string authorizationId = null, string payerEmail = null, string payerStatus = null, string payerAddressStatus = null,
+            string protectionEligibility = null, string pendingReason = null)
         {
             AuthorizationId = authorizationId;
             PayerEmail = payerEmail;
@@ -26,20 +34,7 @@ namespace Riskified.SDK.Model.OrderElements
             PayerAddressStatus = payerAddressStatus;
             ProtectionEligibility = protectionEligibility;
             PaymentStatus = paymentStatus;
-            PendingReason = PendingReason;
-        }
-
-        /// <summary>
-        /// Validates the objects fields content
-        /// </summary>
-        /// <param name="validationType">Should use weak validations or strong</param>
-        /// <exception cref="OrderFieldBadFormatException">throws an exception if one of the parameters doesn't match the expected format</exception>
-        public void Validate(Validations validationType = Validations.Weak)
-        {
-            if (validationType != Validations.Weak)
-            {
-                InputValidators.ValidateValuedString(PaymentStatus, "Payment Status");
-            }
+            PendingReason = pendingReason;
         }
 
         [JsonProperty(PropertyName = "authorization_id")]
@@ -66,5 +61,20 @@ namespace Riskified.SDK.Model.OrderElements
         [JsonProperty(PropertyName = "authorization_error")]
         public AuthorizationError AuthorizationError { get; set; }
 
+        /// <summary>
+        ///     Validates the objects fields content
+        /// </summary>
+        /// <param name="validationType">Should use weak validations or strong</param>
+        /// <exception cref="OrderFieldBadFormatException">
+        ///     throws an exception if one of the parameters doesn't match the expected
+        ///     format
+        /// </exception>
+        public void Validate(Validations validationType = Validations.Weak)
+        {
+            if (validationType != Validations.Weak)
+            {
+                InputValidators.ValidateValuedString(PaymentStatus, "Payment Status");
+            }
+        }
     }
 }

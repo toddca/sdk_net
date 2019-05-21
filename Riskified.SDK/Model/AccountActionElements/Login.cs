@@ -1,4 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="Login.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Riskified.SDK.Model.OrderElements;
 
@@ -7,7 +14,7 @@ namespace Riskified.SDK.Model.AccountActionElements
     public class Login : AbstractAccountAction
     {
         public Login(string customerId, string email, LoginStatus loginStatus, ClientDetails clientDetails, SessionDetails sessionDetails) :
-        base(customerId, clientDetails, sessionDetails)
+            base(customerId, clientDetails, sessionDetails)
         {
             Email = email;
             LoginStatus = loginStatus;

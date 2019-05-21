@@ -1,3 +1,10 @@
+// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="OrderNotification.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
 using Riskified.SDK.Model.Internal;
 using Riskified.SDK.Model.OrderElements;
 
@@ -28,13 +35,13 @@ namespace Riskified.SDK.Model
             Warnings = notificationInfo.Warnings;
         }
 
-        public string Id { get; private set; }
-        public string Status { get; private set; }
-        public string OldStatus { get; private set; }
-        public string Description { get; private set; }
-        public Custom Custom { get; private set; }
-        public string Category { get; private set; }
-        public string DecisionCode { get; private set; }
-        public string[] Warnings { get; private set; }
+        public string Id { get; }
+        public string Status { get; }
+        public string OldStatus { get; }
+        public string Description { get; }
+        public Custom Custom { get; }
+        public string Category { get; }
+        public string DecisionCode { get; }
+        public string[] Warnings { get; }
     }
 }

@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="AccommodationLineItem.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using System;
 using Newtonsoft.Json;
-using Riskified.SDK.Model.OrderElements;
 using Riskified.SDK.Utils;
 
 namespace Riskified.SDK.Model.OrderElements
@@ -14,18 +15,18 @@ namespace Riskified.SDK.Model.OrderElements
     {
         public AccommodationLineItem(
             // inherited
-            string title, 
-            double price, 
-            int quantityPurchased, 
-            string productId = null, 
-            string sku = null, 
-            string condition = null, 
+            string title,
+            double price,
+            int quantityPurchased,
+            string productId = null,
+            string sku = null,
+            string condition = null,
             bool? requiresShipping = null,
             string category = null,
             string subCategory = null,
             string brand = null,
-            Seller seller = null, 
-            DeliveredToType? deliveredTo = null, 
+            Seller seller = null,
+            DeliveredToType? deliveredTo = null,
             DateTime? deliveredAt = null,
             // accommodation specific
             string roomType = null,
@@ -37,9 +38,9 @@ namespace Riskified.SDK.Model.OrderElements
             ushort? numberOfGuests = null,
             string cancellationPolicy = null,
             string accommodationType = null
-            ) : base(title: title, price: price, quantityPurchased: quantityPurchased, productId: productId, sku: sku, condition: condition, 
-                     requiresShipping: requiresShipping, seller: seller, deliveredTo: deliveredTo, delivered_at: deliveredAt,
-                     category: category, subCategory: subCategory, brand: brand, productType: OrderElements.ProductType.Accommodation)
+        ) : base(title, price, quantityPurchased, productId, sku, condition,
+                 requiresShipping, seller, deliveredTo, deliveredAt,
+                 category: category, subCategory: subCategory, brand: brand, productType: OrderElements.ProductType.Accommodation)
         {
             RoomType = roomType;
             City = city;
@@ -50,13 +51,6 @@ namespace Riskified.SDK.Model.OrderElements
             NumberOfGuests = numberOfGuests;
             CancellationPolicy = cancellationPolicy;
             AccommodationType = accommodationType;
-        }
-
-        public override void Validate(Validations validationType = Validations.Weak)
-        {
-            base.Validate(validationType);
-
-            if (CountryCode != null) InputValidators.ValidateCountryOrProvinceCode(CountryCode);
         }
 
         [JsonProperty(PropertyName = "room_type")]
@@ -86,5 +80,14 @@ namespace Riskified.SDK.Model.OrderElements
         [JsonProperty(PropertyName = "accommodation_type")]
         public string AccommodationType { get; set; }
 
+        public override void Validate(Validations validationType = Validations.Weak)
+        {
+            base.Validate(validationType);
+
+            if (CountryCode != null)
+            {
+                InputValidators.ValidateCountryOrProvinceCode(CountryCode);
+            }
+        }
     }
 }

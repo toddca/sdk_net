@@ -1,4 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="BasicAddress.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using Newtonsoft.Json;
 using Riskified.SDK.Utils;
 
 namespace Riskified.SDK.Model.OrderElements
@@ -6,7 +13,7 @@ namespace Riskified.SDK.Model.OrderElements
     public class BasicAddress : IJsonSerializable
     {
         /// <summary>
-        /// Creates a BasicAddress instance
+        ///     Creates a BasicAddress instance
         /// </summary>
         /// <param name="address1">The address (street, house number)</param>
         /// <param name="city">The city part of the address</param>
@@ -18,7 +25,12 @@ namespace Riskified.SDK.Model.OrderElements
         /// <param name="province">The full province name (optional)</param>
         /// <param name="provinceCode">The 2 letter code of the province (optional)</param>
         /// <param name="company">The company of the addressee (optional)</param>
-        public BasicAddress(string address1 = null, string city = null, string country = null, string countryCode = null, string phone = null, string address2 = null, string zipCode = null, string province = null, string provinceCode = null, string company = null, bool? verifiedPhone = null, string additionalPhone = null)
+        /// <param name="verifiedPhone"></param>
+        /// <param name="additionalPhone"></param>
+        public BasicAddress(
+            string address1 = null, string city = null, string country = null, string countryCode = null, string phone = null, string address2 = null,
+            string zipCode = null, string province = null, string provinceCode = null, string company = null, bool? verifiedPhone = null,
+            string additionalPhone = null)
         {
             // optional fields:
             Address1 = address1;
@@ -33,30 +45,6 @@ namespace Riskified.SDK.Model.OrderElements
             ZipCode = zipCode;
             Company = company;
             VerifiedPhone = verifiedPhone;
-        }
-
-        /// <summary>
-        /// Validates the objects fields content
-        /// </summary>
-        /// <param name="validationType">Validation level to use on this model</param>
-        /// <exception cref="OrderFieldBadFormatException">throws an exception if one of the parameters doesn't match the expected format</exception>
-        public virtual void Validate(Validations validationType = Validations.Weak)
-        {
-            // optional fields validations
-            if(!string.IsNullOrEmpty(Phone))
-            {
-                InputValidators.ValidatePhoneNumber(Phone);
-            }
-
-            if (!string.IsNullOrEmpty(CountryCode))
-            {
-                InputValidators.ValidateCountryOrProvinceCode(CountryCode);
-            }
-
-            if (!string.IsNullOrEmpty(ProvinceCode))
-            {
-                InputValidators.ValidateCountryOrProvinceCode(ProvinceCode);
-            }
         }
 
         [JsonProperty(PropertyName = "address1")]
@@ -94,5 +82,32 @@ namespace Riskified.SDK.Model.OrderElements
 
         [JsonProperty(PropertyName = "zip")]
         public string ZipCode { get; set; }
+
+        /// <summary>
+        ///     Validates the objects fields content
+        /// </summary>
+        /// <param name="validationType">Validation level to use on this model</param>
+        /// <exception cref="Exceptions.OrderFieldBadFormatException">
+        ///     throws an exception if one of the parameters doesn't match the expected
+        ///     format
+        /// </exception>
+        public virtual void Validate(Validations validationType = Validations.Weak)
+        {
+            // optional fields validations
+            if (!string.IsNullOrEmpty(Phone))
+            {
+                InputValidators.ValidatePhoneNumber(Phone);
+            }
+
+            if (!string.IsNullOrEmpty(CountryCode))
+            {
+                InputValidators.ValidateCountryOrProvinceCode(CountryCode);
+            }
+
+            if (!string.IsNullOrEmpty(ProvinceCode))
+            {
+                InputValidators.ValidateCountryOrProvinceCode(ProvinceCode);
+            }
+        }
     }
 }

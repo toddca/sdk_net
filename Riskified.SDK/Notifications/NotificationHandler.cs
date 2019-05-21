@@ -1,25 +1,32 @@
-﻿using System;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="NotificationHandler.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Riskified.SDK.Exceptions;
 using Riskified.SDK.Logging;
 using Riskified.SDK.Model;
-using Riskified.SDK.Utils;
 using Riskified.SDK.Model.Internal;
+using Riskified.SDK.Utils;
 
 namespace Riskified.SDK.Notifications
 {
     public class NotificationsHandler
     {
+        private readonly string _authToken, _shopDomain;
         private readonly HttpListener _listener;
+        private readonly string _localListeningEndpoint;
         private readonly Action<OrderNotification> _notificationReceivedCallback;
         private bool _isStopped;
-        private readonly string _localListeningEndpoint;
-        private readonly string _authToken,_shopDomain;
-        
+
         /// <summary>
-        /// Creates a notification handler on the specified endpoint
+        ///     Creates a notification handler on the specified endpoint
         /// </summary>
         /// <param name="localListeningEndpoint">The endpoint for the notification server listener</param>
         /// <param name="notificationReceived">Callback to be called on each notification arrival</param>
@@ -37,7 +44,7 @@ namespace Riskified.SDK.Notifications
         }
 
         /// <summary>
-        /// Stops the notifications server listener
+        ///     Stops the notifications server listener
         /// </summary>
         public void StopReceiveNotifications()
         {
@@ -46,15 +53,20 @@ namespace Riskified.SDK.Notifications
         }
 
         /// <summary>
-        /// Runs the notification server
-        /// This method is blocking and will not return until StopReceiveNotifications is called
+        ///     Runs the notification server
+        ///     This method is blocking and will not return until StopReceiveNotifications is called
         /// </summary>
-        /// <exception cref="NotifierServerFailedToStartException">Thrown when the listener was unable to start due to server network configuration errors</exception>
+        /// <exception cref="NotifierServerFailedToStartException">
+        ///     Thrown when the listener was unable to start due to server
+        ///     network configuration errors
+        /// </exception>
         /// <exception cref="NotifierAlreadyRunningException">Thrown when server is already running</exception>
         public void ReceiveNotifications()
         {
             if (!_isStopped)
+            {
                 throw new NotifierAlreadyRunningException("Notification handler already running");
+            }
 
             if (!_listener.IsListening)
             {
@@ -64,15 +76,13 @@ namespace Riskified.SDK.Notifications
                 }
                 catch (Exception e)
                 {
-                    string errorMsg =
-                        string.Format(
-                            "Unable to start the HTTP webhook listener on: {0}. Check firewall configuration and make sure the app is running under admin privleges",
-                            _localListeningEndpoint);
+                    var errorMsg =
+                        $"Unable to start the HTTP webhook listener on: {_localListeningEndpoint}. Check firewall configuration and make sure the app is running under admin privileges";
                     LoggingServices.Fatal(errorMsg, e);
                     throw new NotifierServerFailedToStartException(errorMsg, e);
                 }
             }
-            
+
             _isStopped = false;
 
             while (!_isStopped)
@@ -91,34 +101,32 @@ namespace Riskified.SDK.Notifications
                     }
 
                     string responseString;
-                    bool acionSucceeded = false;
+                    var actionSucceeded = false;
                     try
                     {
-                        var notificationData = HttpUtils.ParsePostRequestToObject<OrderWrapper<Notification>>(request,_authToken);
-                        OrderNotification n = new OrderNotification(notificationData);
+                        var notificationData = HttpUtils.ParsePostRequestToObject<OrderWrapper<Notification>>(request, _authToken);
+                        var n = new OrderNotification(notificationData);
                         responseString =
-                                string.Format(
-                                    "<HTML><BODY>Merchant Received Notification For Order {0} with status {1} and description {2}</BODY></HTML>",
-                                    n.Id, n.Status, n.Description);
+                            $"<HTML><BODY>Merchant Received Notification For Order {n.Id} with status {n.Status} and description {n.Description}</BODY></HTML>";
                         // running callback to call merchant code on the notification
                         Task.Factory.StartNew(() => _notificationReceivedCallback(n));
-                        acionSucceeded = true;
+                        actionSucceeded = true;
                     }
                     catch (RiskifiedAuthenticationException uae)
                     {
-                        LoggingServices.Error("Notification message authentication failed",uae);
+                        LoggingServices.Error("Notification message authentication failed", uae);
                         responseString = "<HTML><BODY>Merchant couldn't authenticate notification message</BODY></HTML>";
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
-                        LoggingServices.Error("Unable to parse notification message. Some or all of the post params are missing or invalid",e);
+                        LoggingServices.Error("Unable to parse notification message. Some or all of the post params are missing or invalid", e);
                         responseString = "<HTML><BODY>Merchant couldn't parse notification message</BODY></HTML>";
                     }
-                    
+
                     // Obtain a response object to write back a ack response to the riskified server
-                    HttpListenerResponse response = context.Response;
+                    var response = context.Response;
                     // Construct a simple response. 
-                    HttpUtils.BuildAndSendResponse(response, _authToken,_shopDomain, responseString,acionSucceeded);
+                    HttpUtils.BuildAndSendResponse(response, _authToken, _shopDomain, responseString, actionSucceeded);
                 }
                 catch (Exception e)
                 {
@@ -134,7 +142,7 @@ namespace Riskified.SDK.Notifications
 
         private void RestartHttpListener()
         {
-            int retriesMade = 0;
+            var retriesMade = 0;
 
             LoggingServices.Info("HttpListener is crushed. Waiting 30 seconds before restarting");
             while (retriesMade < 3)
@@ -148,16 +156,13 @@ namespace Riskified.SDK.Notifications
                 }
                 catch (Exception e)
                 {
-                    LoggingServices.Error("Restart # "+ retriesMade +" failed",e);
+                    LoggingServices.Error("Restart # " + retriesMade + " failed", e);
                 }
-            
             }
-            string errorMsg = "Failed to restart HttpListener after " + retriesMade +
-                              " attempts. Notifications will not be received. Please check the connection and configuration of the server";
+            var errorMsg = "Failed to restart HttpListener after " + retriesMade +
+                           " attempts. Notifications will not be received. Please check the connection and configuration of the server";
             LoggingServices.Fatal(errorMsg);
             throw new NotifierServerFailedToStartException(errorMsg);
         }
     }
-
-
 }

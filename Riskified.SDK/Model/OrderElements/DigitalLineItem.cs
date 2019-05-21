@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="DigitalLineItem.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using System;
 using Newtonsoft.Json;
-using Riskified.SDK.Utils;
 
 namespace Riskified.SDK.Model.OrderElements
 {
-    public class DigitalLineItem : LineItem 
+    public class DigitalLineItem : LineItem
     {
         public DigitalLineItem(
             // inherited
@@ -25,8 +27,8 @@ namespace Riskified.SDK.Model.OrderElements
             Seller seller = null,
             DeliveredToType? deliveredTo = null,
             DateTime? deliveredAt = null,
-            
-            // giftcard specific
+
+            // gift card specific
             string senderName = null,
             string displayName = null,
             bool? photoUploaded = null,
@@ -38,12 +40,12 @@ namespace Riskified.SDK.Model.OrderElements
             string cardSubType = null,
             string senderEmail = null,
             Recipient recipient = null
-            ) : base(
-                title: title, price: price, quantityPurchased: quantityPurchased, productId: productId, sku: sku,
-                condition: condition,
-                requiresShipping: requiresShipping, seller: seller, deliveredTo: deliveredTo, delivered_at: deliveredAt,
-                category: category, subCategory: subCategory, brand: brand,
-                productType: OrderElements.ProductType.Digital)
+        ) : base(
+                 title, price, quantityPurchased, productId, sku,
+                 condition,
+                 requiresShipping, seller, deliveredTo, deliveredAt,
+                 category: category, subCategory: subCategory, brand: brand,
+                 productType: OrderElements.ProductType.Digital)
         {
             SenderName = senderName;
             DisplayName = displayName;
@@ -58,67 +60,62 @@ namespace Riskified.SDK.Model.OrderElements
             Recipient = recipient;
         }
 
-        public override void Validate(Validations validationType = Validations.Weak)
-        {
-            base.Validate(validationType);
-        }
-
         /// <summary>
-        /// The digital good's (giftcard) sender name.
+        ///     The digital good's (gift card) sender name.
         /// </summary>
         [JsonProperty(PropertyName = "sender_name")]
         public string SenderName { get; set; }
 
         /// <summary>
-        /// The digital good's (giftcard) sender email.
+        ///     The digital good's (gift card) sender email.
         /// </summary>
         [JsonProperty(PropertyName = "sender_email")]
         public string SenderEmail { get; set; }
 
         /// <summary>
-        /// The digital good's (giftcard) display name.
+        ///     The digital good's (gift card) display name.
         /// </summary>
         [JsonProperty(PropertyName = "display_name")]
         public string DisplayName { get; set; }
 
         /// <summary>
-        /// Is the gift card sender added a photo.
+        ///     Is the gift card sender added a photo.
         /// </summary>
         [JsonProperty(PropertyName = "photo_uploaded")]
         public bool? PhotoUploaded { get; set; }
 
         /// <summary>
-        /// The digital good's (giftcard) sender photo's url.
+        ///     The digital good's (gift card) sender photo's url.
         /// </summary>
         [JsonProperty(PropertyName = "photo_url")]
         public string PhotoUrl { get; set; }
 
         /// <summary>
-        /// The digital good's (giftcard) greeting's photo url.
+        ///     The digital good's (gift card) greeting's photo url.
         /// </summary>
         [JsonProperty(PropertyName = "greeting_photo_url")]
         public string GreetingPhotoUrl { get; set; }
 
         /// <summary>
-        /// The digital good's (giftcard) message.
+        ///     The digital good's (gift card) message.
         /// </summary>
         [JsonProperty(PropertyName = "message")]
         public string Message { get; set; }
 
         /// <summary>
-        /// The digital good's (giftcard) greeting message.
+        ///     The digital good's (gift card) greeting message.
         /// </summary>
         [JsonProperty(PropertyName = "greeting_message")]
         public string GreetingMessage { get; set; }
 
         /// <summary>
-        /// The digital good's (giftcard) type.
+        ///     The digital good's (gift card) type.
         /// </summary>
         [JsonProperty(PropertyName = "card_type")]
         public string CardType { get; set; }
 
         /// <summary>
-        /// The digital good's (giftcard) sub type.
+        ///     The digital good's (gift card) sub type.
         /// </summary>
         [JsonProperty(PropertyName = "card_subtype")]
         public string CardSubtype { get; set; }

@@ -1,29 +1,33 @@
-﻿using Newtonsoft.Json;
+﻿// // -----------------------------------------------------------------------
+// // <copyright from="2019" to="2019" file="OrderCheckoutDenied.cs" company="Lindell Technologies">
+// //    Copyright (c) Lindell Technologies All Rights Reserved.
+// //    Information Contained Herein is Proprietary and Confidential.
+// // </copyright>
+// // -----------------------------------------------------------------------
+
+using Newtonsoft.Json;
 using Riskified.SDK.Model.OrderCheckoutElements;
-using Riskified.SDK.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Riskified.SDK.Model
 {
     public class OrderCheckoutDenied : OrderBase
     {
         /// <summary>
-        /// @Deprecated - Create a checkout denied (deprecated constructor, please use PaymentDetails.AuthorizationError)
+        ///     @Deprecated - Create a checkout denied (deprecated constructor, please use PaymentDetails.AuthorizationError)
         /// </summary>
         /// <param name="merchantOrderId">The unique id of the order at the merchant systems</param>
-        /// <param name="authorizationError">An object describing the failed result of an authorization attempt by a payment gateway</param>
+        /// <param name="authorizationError">
+        ///     An object describing the failed result of an authorization attempt by a payment
+        ///     gateway
+        /// </param>
         public OrderCheckoutDenied(string merchantOrderId, AuthorizationError authorizationError)
             : base(merchantOrderId)
         {
-            this.AuthorizationError = authorizationError;
+            AuthorizationError = authorizationError;
         }
 
         /// <summary>
-        /// Create a checkout denied
+        ///     Create a checkout denied
         /// </summary>
         /// <param name="merchantOrderId">The unique id of the order at the merchant systems</param>
         public OrderCheckoutDenied(string merchantOrderId)
@@ -31,13 +35,8 @@ namespace Riskified.SDK.Model
         {
         }
 
-        public override void Validate(Validations validationType = Validations.Weak)
-        {
-            base.Validate(validationType);
-        }
-
         /// <summary>
-        /// @Deprecated property, please use PaymentDetails.AuthorizationError
+        ///     @Deprecated property, please use PaymentDetails.AuthorizationError
         /// </summary>
         [JsonProperty(PropertyName = "authorization_error")]
         public AuthorizationError AuthorizationError { get; set; }
